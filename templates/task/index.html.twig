@@ -5,6 +5,8 @@
 {% block body %}
     <h1>Task index</h1>
 
+    {{ include('task/_search_form.html.twig') }}
+
     <table class="table">
         <thead>
             <tr>
@@ -30,6 +32,10 @@
         {% endfor %}
         </tbody>
     </table>
+
+    {% if searchMessage is not empty %}
+        <p>{{ searchMessage }}</p>
+    {% endif %}
 
     <a href="{{ path('app_task_new') }}">Create new</a>
 {% endblock %}
