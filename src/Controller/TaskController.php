@@ -1,0 +1,108 @@
+<?php
+
+namespace App\Controller;
+
+use App\Entity\Task;
+use App\Entity\User;
+use App\Form\TaskSearchType;
+use App\Form\TaskType;
+use App\Repository\TaskRepository;
+use App\Utils\TaskSearchRequest;
+use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Security\Http\Attribute\CurrentUser;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
+
+#[Route('/task')]
+#[IsGranted('ROLE_USER')]
+final class TaskController extends AbstractController
+{
+    #[Route(name: 'app_task_index', methods: ['GET', 'POST'])]
+    public function index(TaskRepository $taskRepository, Request $request, #[CurrentUser] User $currentUser): Response
+    {
+        $taskSearchRequest = new TaskSearchRequest();
+        $form = $this->createForm(TaskSearchType::class, $taskSearchRequest, [
+            'action' => $this->generateUrl('app_task_index'),
+            'method' => 'GET',
+        ]);
+
+        $form->handleRequest($request);
+        $message = '';
+        $tasks = $taskRepository->findBy(['user' => $currentUser->getId()]);
+        if ($form->isSubmitted() && $form->isValid()) {
+            // formulaire soumis et valide - afficher les taches de l'utilisateur filtrées par mot clé
+
+            if(trim($taskSearchRequest->getRequest() ?? '') === ''){
+                $message = 'Veuillez saisir au moins un caractère';
+            } else {
+                $tasks = $taskRepository->findByKeyWord($taskSearchRequest->getRequest(), $currentUser);
+            }
+        }
+        return $this->render('task/index.html.twig', [
+            'tasks' => $tasks,
+            'form'  => $form->createView(),
+            'searchMessage' => $message
+        ]);
+    }
+
+    #[Route('/new', name: 'app_task_new', methods: ['GET', 'POST'])]
+    public function new(Request $request, EntityManagerInterface $entityManager, #[CurrentUser] User $currentUser): Response
+    {
+        $task = new Task();
+        $form = $this->createForm(TaskType::class, $task);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $task->setUser($currentUser);
+            $entityManager->persist($task);
+            $entityManager->flush();
+
+            return $this->redirectToRoute('app_task_index', [], Response::HTTP_SEE_OTHER);
+        }
+
+        return $this->render('task/new.html.twig', [
+            'task' => $task,
+            'form' => $form,
+        ]);
+    }
+
+    #[Route('/{id}', name: 'app_task_show', methods: ['GET'])]
+    public function show(Task $task): Response
+    {
+        return $this->render('task/show.html.twig', [
+            'task' => $task,
+        ]);
+    }
+
+    #[Route('/{id}/edit', name: 'app_task_edit', methods: ['GET', 'POST'])]
+    public function edit(Request $request, Task $task, EntityManagerInterface $entityManager): Response
+    {
+        $form = $this->createForm(TaskType::class, $task);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $entityManager->flush();
+
+            return $this->redirectToRoute('app_task_index', [], Response::HTTP_SEE_OTHER);
+        }
+
+        return $this->render('task/edit.html.twig', [
+            'task' => $task,
+            'form' => $form,
+        ]);
+    }
+
+    #[Route('/{id}', name: 'app_task_delete', methods: ['POST'])]
+    public function delete(Request $request, Task $task, EntityManagerInterface $entityManager): Response
+    {
+        if ($this->isCsrfTokenValid('delete'.$task->getId(), $request->getPayload()->getString('_token'))) {
+            $entityManager->remove($task);
+            $entityManager->flush();
+        }
+
+        return $this->redirectToRoute('app_task_index', [], Response::HTTP_SEE_OTHER);
+    }
+}
