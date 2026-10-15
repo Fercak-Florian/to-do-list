@@ -31,31 +31,21 @@ final class TaskController extends AbstractController
 
         $form->handleRequest($request);
         $message = '';
+        $tasks = $taskRepository->findBy(['user' => $currentUser->getId()]);
         if ($form->isSubmitted() && $form->isValid()) {
             // formulaire soumis et valide - afficher les taches de l'utilisateur filtrées par mot clé
+
             if(trim($taskSearchRequest->getRequest() ?? '') === ''){
                 $message = 'Veuillez saisir au moins un caractère';
-                return $this->render('task/index.html.twig', [
-                    'tasks' => $taskRepository->findBy(['user' => $currentUser->getId()]),
-                    'form' => $form->createView(),
-                    'searchMessage' => $message
-                ]);
             } else {
-                return $this->render('task/index.html.twig', [
-                    'tasks' => $taskRepository->findByValue($taskSearchRequest->getRequest(), $currentUser),
-                    'form' => $form->createView(),
-                    'searchMessage' => $message
-                ]);
+                $tasks = $taskRepository->findByKeyWord($taskSearchRequest->getRequest(), $currentUser);
             }
-
-        } else {
-            // afficher toutes les taches de l'utilisateur connecté
-            return $this->render('task/index.html.twig', [
-                'tasks' => $taskRepository->findBy(['user' => $currentUser->getId()]),
-                'form' => $form->createView(),
-                'searchMessage' => $message
-            ]);
         }
+        return $this->render('task/index.html.twig', [
+            'tasks' => $tasks,
+            'form'  => $form->createView(),
+            'searchMessage' => $message
+        ]);
     }
 
     #[Route('/new', name: 'app_task_new', methods: ['GET', 'POST'])]
