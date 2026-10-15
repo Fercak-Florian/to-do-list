@@ -4,8 +4,10 @@ namespace App\Controller;
 
 use App\Entity\Task;
 use App\Entity\User;
+use App\Form\TaskSearchType;
 use App\Form\TaskType;
 use App\Repository\TaskRepository;
+use App\Utils\TaskSearchRequest;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -18,12 +20,42 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 #[IsGranted('ROLE_USER')]
 final class TaskController extends AbstractController
 {
-    #[Route(name: 'app_task_index', methods: ['GET'])]
-    public function index(TaskRepository $taskRepository, #[CurrentUser] User $currentUser): Response
+    #[Route(name: 'app_task_index', methods: ['GET', 'POST'])]
+    public function index(TaskRepository $taskRepository, Request $request, #[CurrentUser] User $currentUser): Response
     {
-        return $this->render('task/index.html.twig', [
-            'tasks' => $taskRepository->findBy(['user' => $currentUser->getId()])
+        $taskSearchRequest = new TaskSearchRequest();
+        $form = $this->createForm(TaskSearchType::class, $taskSearchRequest, [
+            'action' => $this->generateUrl('app_task_index'),
+            'method' => 'GET',
         ]);
+
+        $form->handleRequest($request);
+        $message = '';
+        if ($form->isSubmitted() && $form->isValid()) {
+            // formulaire soumis et valide - afficher les taches de l'utilisateur filtrées par mot clé
+            if(trim($taskSearchRequest->getRequest() ?? '') === ''){
+                $message = 'Veuillez saisir au moins un caractère';
+                return $this->render('task/index.html.twig', [
+                    'tasks' => $taskRepository->findBy(['user' => $currentUser->getId()]),
+                    'form' => $form->createView(),
+                    'searchMessage' => $message
+                ]);
+            } else {
+                return $this->render('task/index.html.twig', [
+                    'tasks' => $taskRepository->findByValue($taskSearchRequest->getRequest(), $currentUser),
+                    'form' => $form->createView(),
+                    'searchMessage' => $message
+                ]);
+            }
+
+        } else {
+            // afficher toutes les taches de l'utilisateur connecté
+            return $this->render('task/index.html.twig', [
+                'tasks' => $taskRepository->findBy(['user' => $currentUser->getId()]),
+                'form' => $form->createView(),
+                'searchMessage' => $message
+            ]);
+        }
     }
 
     #[Route('/new', name: 'app_task_new', methods: ['GET', 'POST'])]
