@@ -57,6 +57,7 @@ final class TaskController extends AbstractController
 
         if ($form->isSubmitted() && $form->isValid()) {
             $task->setUser($currentUser);
+            $task->setCreatedAt(new \DateTimeImmutable('now'));
             $entityManager->persist($task);
             $entityManager->flush();
 
