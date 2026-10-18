@@ -12,7 +12,8 @@
             <tr>
                 <th>Id</th>
                 <th>Title</th>
-                <th>actions</th>
+                <th>Details</th>
+                <th>Actions</th>
             </tr>
         </thead>
         <tbody>
@@ -20,6 +21,7 @@
             <tr>
                 <td>{{ task.id }}</td>
                 <td>{{ task.title }}</td>
+                <td>{{ task.details }}</td>
                 <td>
                     <a href="{{ path('app_task_show', {'id': task.id}) }}">show</a>
                     <a href="{{ path('app_task_edit', {'id': task.id}) }}">edit</a>
