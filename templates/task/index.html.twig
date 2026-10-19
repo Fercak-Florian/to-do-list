@@ -5,39 +5,7 @@
 {% block body %}
     <h1>Task index</h1>
 
-    {{ include('task/_search_form.html.twig') }}
-
-    <table class="table">
-        <thead>
-            <tr>
-                <th>Id</th>
-                <th>Title</th>
-                <th>Details</th>
-                <th>Actions</th>
-            </tr>
-        </thead>
-        <tbody>
-        {% for task in tasks %}
-            <tr>
-                <td>{{ task.id }}</td>
-                <td>{{ task.title }}</td>
-                <td>{{ task.details }}</td>
-                <td>
-                    <a href="{{ path('app_task_show', {'id': task.id}) }}">show</a>
-                    <a href="{{ path('app_task_edit', {'id': task.id}) }}">edit</a>
-                </td>
-            </tr>
-        {% else %}
-            <tr>
-                <td colspan="3">no records found</td>
-            </tr>
-        {% endfor %}
-        </tbody>
-    </table>
-
-    {% if searchMessage is not empty %}
-        <p>{{ searchMessage }}</p>
-    {% endif %}
+    {{ component('Task') }}
 
     <a href="{{ path('app_task_new') }}">Create new</a>
 {% endblock %}

@@ -20,13 +20,13 @@ class TaskRepository extends ServiceEntityRepository
         /**
          * @return Task[] Returns an array of Task objects
          */
-        public function findByKeyWord($value, User $currentUser): array
+        public function findByKeyWord($keyWord, User $currentUser): array
         {
-            $value = '%' . $value . '%';
+            $keyWord = '%' . $keyWord . '%';
             return $this->createQueryBuilder('t')
                 ->andWhere('t.title LIKE :val')
                 ->andWhere('t.user = :user')
-                ->setParameter('val', $value)
+                ->setParameter('val', $keyWord)
                 ->setParameter('user', $currentUser)
                 ->getQuery()
                 ->getResult()
