@@ -30,21 +30,13 @@ final class TaskController extends AbstractController
         ]);
 
         $form->handleRequest($request);
-        $message = '';
         $tasks = $taskRepository->findBy(['user' => $currentUser->getId()]);
         if ($form->isSubmitted() && $form->isValid()) {
-            // formulaire soumis et valide - afficher les taches de l'utilisateur filtrées par mot clé
-
-            if(trim($taskSearchRequest->getRequest() ?? '') === ''){
-                $message = 'Veuillez saisir au moins un caractère';
-            } else {
-                $tasks = $taskRepository->findByKeyWord($taskSearchRequest->getRequest(), $currentUser);
-            }
+            $tasks = $taskRepository->findByKeyWord($taskSearchRequest->getRequest(), $currentUser);
         }
         return $this->render('task/index.html.twig', [
             'tasks' => $tasks,
             'form'  => $form->createView(),
-            'searchMessage' => $message
         ]);
     }
 
