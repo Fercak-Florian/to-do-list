@@ -17,29 +17,23 @@ class TaskRepository extends ServiceEntityRepository
         parent::__construct($registry, Task::class);
     }
 
-        /**
-         * @return Task[] Returns an array of Task objects
-         */
-        public function findByKeyWord($keyWord, User $currentUser): array
-        {
-            $keyWord = '%' . $keyWord . '%';
-            return $this->createQueryBuilder('t')
-                ->andWhere('t.title LIKE :val')
-                ->andWhere('t.user = :user')
-                ->setParameter('val', $keyWord)
-                ->setParameter('user', $currentUser)
-                ->getQuery()
-                ->getResult()
-            ;
+    /**
+     * @return Task[] Returns an array of Task objects
+     */
+    public function findByKeyWord(string $keyWord, User $currentUser, string $sortOrder): array
+    {
+        $keyWord = '%' . $keyWord . '%';
+        if(!in_array($sortOrder, ['ASC', 'DESC'], true)){
+            $sortOrder = 'DESC';
         }
-
-    //    public function findOneBySomeField($value): ?Task
-    //    {
-    //        return $this->createQueryBuilder('t')
-    //            ->andWhere('t.exampleField = :val')
-    //            ->setParameter('val', $value)
-    //            ->getQuery()
-    //            ->getOneOrNullResult()
-    //        ;
-    //    }
+        return $this->createQueryBuilder('t')
+            ->andWhere('t.title LIKE :val')
+            ->andWhere('t.user = :user')
+            ->setParameter('val', $keyWord)
+            ->setParameter('user', $currentUser)
+            ->orderBy('t.createdAt', $sortOrder)
+            ->getQuery()
+            ->getResult()
+            ;
+    }
 }
