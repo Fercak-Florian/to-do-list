@@ -10,12 +10,15 @@ use Symfony\UX\LiveComponent\Attribute\LiveProp;
 use Symfony\UX\LiveComponent\DefaultActionTrait;
 
 #[AsLiveComponent]
-final class Task
+final class TaskList
 {
     use DefaultActionTrait;
 
     #[LiveProp(writable: true)]
     public string $query = '';
+
+    #[LiveProp(writable: true)]
+    public string $sortOrder = 'DESC';
 
     public function __construct(private TaskRepository $taskRepository, private Security $security)
     {
@@ -27,6 +30,6 @@ final class Task
         if(!$currentUser instanceof User) {
             return [];
         }
-        return $this->taskRepository->findByKeyWord($this->query, $currentUser);
+        return $this->taskRepository->findByKeyWord($this->query, $currentUser, $this->sortOrder);
     }
 }

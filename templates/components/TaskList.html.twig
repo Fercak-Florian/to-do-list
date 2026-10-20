@@ -1,12 +1,19 @@
 <div{{ attributes }}>
     <label for="search-bar">Rechercher</label>
     <input type="search" data-model="query" name="search-bar">
+
+    <select data-model="sortOrder">
+        <option value="DESC">Du plus récent au plus ancien</option>
+        <option value="ASC">Du plus ancien au plus récent</option>
+    </select>
+
     <table class="table">
         <thead>
         <tr>
             <th>Id</th>
-            <th>Title</th>
+            <th>Titre</th>
             <th>Details</th>
+            <th>Date de creation</th>
             <th>Actions</th>
         </tr>
         </thead>
@@ -16,6 +23,7 @@
                 <td>{{ task.id }}</td>
                 <td>{{ task.title }}</td>
                 <td>{{ task.details }}</td>
+                <td>{{ task.createdAt|date('d/m/Y H:i') }}</td>
                 <td>
                     <a href="{{ path('app_task_show', {'id': task.id}) }}">show</a>
                     <a href="{{ path('app_task_edit', {'id': task.id}) }}">edit</a>
@@ -23,7 +31,7 @@
             </tr>
         {% else %}
             <tr>
-                <td colspan="3">no records found</td>
+                <td colspan="3">Aucune tache trouvée</td>
             </tr>
         {% endfor %}
         </tbody>
