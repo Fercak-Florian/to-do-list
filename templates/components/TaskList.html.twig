@@ -14,6 +14,7 @@
             <th>Titre</th>
             <th>Details</th>
             <th>Date de creation</th>
+            <th>Date limite</th>
             <th>Actions</th>
         </tr>
         </thead>
@@ -24,6 +25,7 @@
                 <td>{{ task.title }}</td>
                 <td>{{ task.details }}</td>
                 <td>{{ task.createdAt|date('d/m/Y H:i') }}</td>
+                <td>{{ task.deadline|date('d/m/Y H:i') }}</td>
                 <td>
                     <a href="{{ path('app_task_show', {'id': task.id}) }}">show</a>
                     <a href="{{ path('app_task_edit', {'id': task.id}) }}">edit</a>

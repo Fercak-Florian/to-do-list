@@ -25,6 +25,9 @@ class Task
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $details = null;
 
+    #[ORM\Column(nullable: true)]
+    private ?\DateTime $deadline = null;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -74,6 +77,18 @@ class Task
     public function setDetails(?string $details): static
     {
         $this->details = $details;
+
+        return $this;
+    }
+
+    public function getDeadline(): ?\DateTime
+    {
+        return $this->deadline;
+    }
+
+    public function setDeadline(?\DateTime $deadline): static
+    {
+        $this->deadline = $deadline;
 
         return $this;
     }
