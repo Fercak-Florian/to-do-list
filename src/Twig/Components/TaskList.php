@@ -4,6 +4,7 @@ namespace App\Twig\Components;
 
 use App\Entity\User;
 use App\Repository\TaskRepository;
+use App\Utils\TaskSearchCriteria;
 use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\UX\LiveComponent\Attribute\AsLiveComponent;
 use Symfony\UX\LiveComponent\Attribute\LiveProp;
@@ -15,7 +16,7 @@ final class TaskList
     use DefaultActionTrait;
 
     #[LiveProp(writable: true)]
-    public string $query = '';
+    public string $keyWord = '';
 
     #[LiveProp(writable: true)]
     public string $sortOrder = 'DESC';
@@ -24,12 +25,13 @@ final class TaskList
     {
     }
 
-    public function getTasksByKeyWord(): array
+    public function getTasksByCriteria(): array
     {
+        $taskSearchCriteria = new TaskSearchCriteria($this->keyWord, $this->sortOrder);
         $currentUser = $this->security->getUser();
         if(!$currentUser instanceof User) {
             return [];
         }
-        return $this->taskRepository->findByKeyWord($this->query, $currentUser, $this->sortOrder);
+        return $this->taskRepository->findByCriteria($taskSearchCriteria, $currentUser);
     }
 }
