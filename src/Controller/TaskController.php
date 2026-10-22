@@ -4,10 +4,8 @@ namespace App\Controller;
 
 use App\Entity\Task;
 use App\Entity\User;
-use App\Form\TaskSearchType;
 use App\Form\TaskType;
 use App\Repository\TaskRepository;
-use App\Utils\TaskSearchRequest;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -20,7 +18,7 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 #[IsGranted('ROLE_USER')]
 final class TaskController extends AbstractController
 {
-    #[Route(name: 'app_task_index', methods: ['GET', 'POST'])]
+    #[Route(name: 'app_task_index', methods: ['GET'])]
     public function index(TaskRepository $taskRepository, #[CurrentUser] User $currentUser): Response
     {
         $tasks = $taskRepository->findBy(['user' => $currentUser->getId()]);
