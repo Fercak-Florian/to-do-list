@@ -21,22 +21,11 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 final class TaskController extends AbstractController
 {
     #[Route(name: 'app_task_index', methods: ['GET', 'POST'])]
-    public function index(TaskRepository $taskRepository, Request $request, #[CurrentUser] User $currentUser): Response
+    public function index(TaskRepository $taskRepository, #[CurrentUser] User $currentUser): Response
     {
-        $taskSearchRequest = new TaskSearchRequest();
-        $form = $this->createForm(TaskSearchType::class, $taskSearchRequest, [
-            'action' => $this->generateUrl('app_task_index'),
-            'method' => 'GET',
-        ]);
-
-        $form->handleRequest($request);
         $tasks = $taskRepository->findBy(['user' => $currentUser->getId()]);
-        if ($form->isSubmitted() && $form->isValid()) {
-            $tasks = $taskRepository->findByKeyWord($taskSearchRequest->getRequest(), $currentUser);
-        }
         return $this->render('task/index.html.twig', [
             'tasks' => $tasks,
-            'form'  => $form->createView(),
         ]);
     }
 
