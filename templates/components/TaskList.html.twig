@@ -1,6 +1,6 @@
 <div{{ attributes }}>
     <label for="search-bar">Rechercher</label>
-    <input type="search" data-model="query" name="search-bar">
+    <input type="search" data-model="keyWord" name="search-bar">
 
     <select data-model="sortOrder">
         <option value="DESC">Du plus récent au plus ancien</option>
@@ -19,7 +19,7 @@
         </tr>
         </thead>
         <tbody>
-        {% for task in this.tasksByKeyWord %}
+        {% for task in this.tasksByCriteria %}
             <tr>
                 <td>{{ task.id }}</td>
                 <td>{{ task.title }}</td>
