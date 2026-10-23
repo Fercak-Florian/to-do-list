@@ -4,7 +4,7 @@
 
 {% block body %}
     <h1>Liste des taches</h1>
-
+    {{ component('UserBar') }}
     {{ component('TaskList') }}
 
     <a href="{{ path('app_task_new') }}">Create new</a>
