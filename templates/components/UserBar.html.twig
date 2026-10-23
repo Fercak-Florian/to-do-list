@@ -1,0 +1,14 @@
+<div{{ attributes }}>
+    <!-- component HTML -->
+    {% if is_granted('IS_AUTHENTICATED_FULLY') %}
+        <div class="d-flex my-3">
+            <div>Connecté: {{ app.user.email }}</div>
+            <div>
+                <a href="{{ logout_path() }}" class="btn btn-primary">Logout</a>
+            </div>
+        </div>
+    {% else %}
+        <div>pas connecté</div>
+    {% endif %}
+
+</div>
