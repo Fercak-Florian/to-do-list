@@ -28,6 +28,9 @@ class Task
     #[ORM\Column(nullable: true)]
     private ?\DateTime $deadline = null;
 
+    #[ORM\Column]
+    private ?bool $completed = null;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -89,6 +92,18 @@ class Task
     public function setDeadline(?\DateTime $deadline): static
     {
         $this->deadline = $deadline;
+
+        return $this;
+    }
+
+    public function isCompleted(): ?bool
+    {
+        return $this->completed;
+    }
+
+    public function setCompleted(bool $completed): static
+    {
+        $this->completed = $completed;
 
         return $this;
     }
