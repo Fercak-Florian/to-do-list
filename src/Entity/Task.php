@@ -29,7 +29,7 @@ class Task
     private ?\DateTime $deadline = null;
 
     #[ORM\Column]
-    private ?bool $completed = null;
+    private bool $completed = false;
 
     public function getId(): ?int
     {

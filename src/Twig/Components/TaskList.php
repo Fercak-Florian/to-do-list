@@ -21,6 +21,9 @@ final class TaskList
     #[LiveProp(writable: true)]
     public string $sortMode = 'created_desc';
 
+    #[LiveProp(writable: true)]
+    public bool $completed = false;
+
     public function __construct(private TaskRepository $taskRepository, private Security $security)
     {
     }
