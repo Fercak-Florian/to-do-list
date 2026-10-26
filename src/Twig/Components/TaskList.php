@@ -19,7 +19,7 @@ final class TaskList
     public string $keyWord = '';
 
     #[LiveProp(writable: true)]
-    public string $sortOrder = 'DESC';
+    public string $sortMode = 'created_desc';
 
     public function __construct(private TaskRepository $taskRepository, private Security $security)
     {
@@ -27,7 +27,7 @@ final class TaskList
 
     public function getTasksByCriteria(): array
     {
-        $taskSearchCriteria = new TaskSearchCriteria($this->keyWord, $this->sortOrder);
+        $taskSearchCriteria = new TaskSearchCriteria($this->keyWord, $this->sortMode);
         $currentUser = $this->security->getUser();
         if(!$currentUser instanceof User) {
             return [];
