@@ -23,16 +23,39 @@ class TaskRepository extends ServiceEntityRepository
      */
     public function findByCriteria(TaskSearchCriteria $taskSearchCriteria, User $currentUser): array
     {
-        $taskSearchCriteria->setKeyWord('%' . $taskSearchCriteria->getKeyWord() . '%');
-//        if(!in_array($sortOrder, ['ASC', 'DESC'], true)){
-//            $sortOrder = 'DESC';
-//        }
+        $keyWord = '%' . $taskSearchCriteria->getKeyWord() . '%';
+        $sortMode = '';
+        $targetField = '';
+
+        switch ($taskSearchCriteria->getSortMode()) {
+            case 'created_desc':
+                $targetField = 't.createdAt';
+                $sortMode = 'DESC';
+                break;
+            case 'created_asc':
+                $targetField = 't.createdAt';
+                $sortMode = 'ASC';
+                break;
+            case 'deadline_desc':
+                $targetField = 't.deadline';
+                $sortMode = 'DESC';
+                break;
+            case 'deadline_asc':
+                $targetField = 't.deadline';
+                $sortMode = 'ASC';
+                break;
+            default :
+                $targetField = 't.createdAt';
+                $sortMode = 'DESC';
+        }
+
+
         return $this->createQueryBuilder('t')
             ->andWhere('t.title LIKE :val')
             ->andWhere('t.user = :user')
-            ->setParameter('val', $taskSearchCriteria->getKeyWord())
+            ->setParameter('val', $keyWord)
             ->setParameter('user', $currentUser)
-            ->orderBy('t.createdAt', $taskSearchCriteria->getSortOrder())
+            ->orderBy($targetField, $sortMode)
             ->getQuery()
             ->getResult()
             ;

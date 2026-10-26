@@ -5,26 +5,26 @@ namespace App\Utils;
 class TaskSearchCriteria
 {
     private ?string $keyWord = '';
-    private ?string $sortOrder = 'DESC';
+    private ?string $sortMode = '';
 
     /**
      * @param string|null $keyWord
-     * @param string|null $sortOrder
+     * @param string|null $sortMode
      */
-    public function __construct(?string $keyWord, ?string $sortOrder)
+    public function __construct(?string $keyWord, ?string $sortMode)
     {
         $this->keyWord = $keyWord;
-        $this->sortOrder = $sortOrder;
+        $this->sortMode = $sortMode;
     }
 
-    public function getSortOrder(): ?string
+    public function getSortMode(): ?string
     {
-        return $this->sortOrder;
+        return $this->sortMode;
     }
 
-    public function setSortOrder(?string $sortOrder): void
+    public function setSortMode(?string $sortMode): void
     {
-        $this->sortOrder = $sortOrder;
+        $this->sortMode = $sortMode;
     }
 
     public function getKeyWord(): ?string

@@ -2,9 +2,11 @@
     <label for="search-bar">Rechercher</label>
     <input type="search" data-model="keyWord" name="search-bar">
 
-    <select data-model="sortOrder">
-        <option value="DESC">Du plus récent au plus ancien</option>
-        <option value="ASC">Du plus ancien au plus récent</option>
+    <select data-model="sortMode">
+        <option value="created_desc">Du plus récent au plus ancien</option>
+        <option value="created_asc">Du plus ancien au plus récent</option>
+        <option value="deadline_desc">Du plus urgent au moins urgent</option>
+        <option value="deadline_asc">Du moins urgent au plus urgent</option>
     </select>
 
     <table class="table">
