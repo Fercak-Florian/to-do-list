@@ -5,8 +5,12 @@ namespace App\Twig\Components;
 use App\Entity\User;
 use App\Repository\TaskRepository;
 use App\Utils\TaskSearchCriteria;
+use Doctrine\ORM\EntityManagerInterface;
+use phpDocumentor\Reflection\Types\Boolean;
 use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\UX\LiveComponent\Attribute\AsLiveComponent;
+use Symfony\UX\LiveComponent\Attribute\LiveAction;
+use Symfony\UX\LiveComponent\Attribute\LiveArg;
 use Symfony\UX\LiveComponent\Attribute\LiveProp;
 use Symfony\UX\LiveComponent\DefaultActionTrait;
 
@@ -21,7 +25,9 @@ final class TaskList
     #[LiveProp(writable: true)]
     public string $sortMode = 'created_desc';
 
-    public function __construct(private TaskRepository $taskRepository, private Security $security)
+    public function __construct(private TaskRepository $taskRepository,
+                                private Security $security,
+                                private EntityManagerInterface $entityManager)
     {
     }
 
@@ -33,5 +39,22 @@ final class TaskList
             return [];
         }
         return $this->taskRepository->findByCriteria($taskSearchCriteria, $currentUser);
+    }
+
+    #[LiveAction]
+    public function saveAsComplete(#[LiveArg] int $id, #[LiveArg] bool $completed)
+    {
+        $task = $this->taskRepository->find($id);
+        if($task !== null) {
+            $currentUser = $this->security->getUser();
+            if($currentUser instanceof User) {
+                if ($task->getUser()->getId() === $currentUser->getId()) {
+                    $task->setCompleted($completed);
+                    $this->entityManager->flush();
+                } else {
+                    // TO DO : display error message
+                }
+            }
+        }
     }
 }
