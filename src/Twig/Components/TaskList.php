@@ -5,8 +5,11 @@ namespace App\Twig\Components;
 use App\Entity\User;
 use App\Repository\TaskRepository;
 use App\Utils\TaskSearchCriteria;
+use phpDocumentor\Reflection\Types\Boolean;
 use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\UX\LiveComponent\Attribute\AsLiveComponent;
+use Symfony\UX\LiveComponent\Attribute\LiveAction;
+use Symfony\UX\LiveComponent\Attribute\LiveArg;
 use Symfony\UX\LiveComponent\Attribute\LiveProp;
 use Symfony\UX\LiveComponent\DefaultActionTrait;
 
@@ -21,9 +24,6 @@ final class TaskList
     #[LiveProp(writable: true)]
     public string $sortMode = 'created_desc';
 
-    #[LiveProp(writable: true)]
-    public bool $completed = false;
-
     public function __construct(private TaskRepository $taskRepository, private Security $security)
     {
     }
@@ -36,5 +36,11 @@ final class TaskList
             return [];
         }
         return $this->taskRepository->findByCriteria($taskSearchCriteria, $currentUser);
+    }
+
+    #[LiveAction]
+    public function markAsComplete(#[LiveArg] int $id, #[LiveArg] bool $completed)
+    {
+        dd($id);
     }
 }
