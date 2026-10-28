@@ -1,4 +1,21 @@
 <div{{ attributes }}>
+
+        {# Affichage des erreurs flash #}
+
+        {% for label, messages in app.flashes %}
+            {% for message in messages %}
+                <div data-controller="flash" class="alert alert-{{ label === 'error' ? 'danger' : label }}">
+                    {{ message }}
+                    <button
+                        type="button"
+                        class="btn-close"
+                        data-action="click->flash#close"
+                        aria-label="Close"
+                    ></button>
+                </div>
+            {% endfor %}
+        {% endfor %}
+
     <label for="search-bar">Rechercher</label>
     <input type="search" data-model="keyWord" name="search-bar">
 
