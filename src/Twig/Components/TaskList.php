@@ -6,6 +6,7 @@ use App\Entity\User;
 use App\Repository\TaskRepository;
 use App\Utils\TaskSearchCriteria;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\UX\LiveComponent\Attribute\AsLiveComponent;
 use Symfony\UX\LiveComponent\Attribute\LiveAction;
@@ -14,7 +15,7 @@ use Symfony\UX\LiveComponent\Attribute\LiveProp;
 use Symfony\UX\LiveComponent\DefaultActionTrait;
 
 #[AsLiveComponent]
-final class TaskList
+final class TaskList extends AbstractController
 {
     use DefaultActionTrait;
 
@@ -50,19 +51,29 @@ final class TaskList
     }
 
     #[LiveAction]
-    public function updateCompletedStatus(#[LiveArg] int $id, #[LiveArg] bool $completed)
+    public function updateCompletedStatus(#[LiveArg] int $id, #[LiveArg] bool $completed): void
     {
         $task = $this->taskRepository->find($id);
-        if($task !== null) {
-            $currentUser = $this->security->getUser();
-            if($currentUser instanceof User) {
-                if ($task->getUser()->getId() === $currentUser->getId()) {
-                    $task->setCompleted($completed);
-                    $this->entityManager->flush();
-                } else {
-                    // TO DO : display error message
-                }
-            }
+        if ($task === null) {
+            $this->addFlash('error', 'Tâche introuvable.');
+            return;
         }
+
+        $currentUser = $this->security->getUser();
+        if (!$currentUser instanceof User) {
+            $this->addFlash('error', 'Vous devez être connecté.');
+            return;
+        }
+
+        if ($task->getUser()->getId() !== $currentUser->getId()) {
+            // Votre TO DO : Erreur de sécurité / droit d'accès
+            $this->addFlash('error', 'Vous n\'êtes pas autorisé à modifier cette tâche.');
+            return;
+        }
+
+        $task->setCompleted($completed);
+        $this->entityManager->flush();
+
+        $this->addFlash('success', $completed ? 'Tâche complétée !' : 'Tâche rouverte.');
     }
 }
