@@ -6,7 +6,6 @@ use App\Entity\User;
 use App\Repository\TaskRepository;
 use App\Utils\TaskSearchCriteria;
 use Doctrine\ORM\EntityManagerInterface;
-use phpDocumentor\Reflection\Types\Boolean;
 use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\UX\LiveComponent\Attribute\AsLiveComponent;
 use Symfony\UX\LiveComponent\Attribute\LiveAction;
@@ -33,7 +32,7 @@ final class TaskList
 
     public function getTasksByCriteria(): array
     {
-        $taskSearchCriteria = new TaskSearchCriteria($this->keyWord, $this->sortMode);
+        $taskSearchCriteria = new TaskSearchCriteria($this->keyWord, $this->sortMode, false);
         $currentUser = $this->security->getUser();
         if(!$currentUser instanceof User) {
             return [];
@@ -41,8 +40,17 @@ final class TaskList
         return $this->taskRepository->findByCriteria($taskSearchCriteria, $currentUser);
     }
 
+    public function getCompletedTasks(): array
+    {
+        $currentUser = $this->security->getUser();
+        if(!$currentUser instanceof User) {
+            return [];
+        }
+        return $this->taskRepository->findUserCompletedTasks($currentUser);
+    }
+
     #[LiveAction]
-    public function saveAsComplete(#[LiveArg] int $id, #[LiveArg] bool $completed)
+    public function updateCompletedStatus(#[LiveArg] int $id, #[LiveArg] bool $completed)
     {
         $task = $this->taskRepository->find($id);
         if($task !== null) {

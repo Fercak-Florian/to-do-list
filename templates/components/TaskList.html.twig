@@ -8,7 +8,8 @@
         <option value="deadline_desc">Du plus urgent au moins urgent</option>
         <option value="deadline_asc">Du moins urgent au plus urgent</option>
     </select>
-
+    {#   Not completed tasks #}
+    <h2>A faire</h2>
     <table class="table">
         <thead>
         <tr>
@@ -38,10 +39,55 @@
                         class="btn"
                         type="button"
                         data-action="live#action"
-                        data-live-action-param="saveAsComplete"
+                        data-live-action-param="updateCompletedStatus"
                         data-live-id-param="{{ task.id }}"
                         data-live-completed-param="true">
                         Marquer comme terminée
+                    </button>
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="3">Aucune tache trouvée</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+    {#   Completed tasks #}
+    <h2>Terminées</h2>
+    <table class="table">
+        <thead>
+        <tr>
+            <th>Id</th>
+            <th>Titre</th>
+            <th>Details</th>
+            <th>Date de creation</th>
+            <th>Date limite</th>
+            <th>Actions</th>
+            <th>Terminer</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for task in this.completedTasks %}
+            <tr>
+                <td>{{ task.id }}</td>
+                <td>{{ task.title }}</td>
+                <td>{{ task.details }}</td>
+                <td>{{ task.createdAt|date('d/m/Y H:i') }}</td>
+                <td>{{ task.deadline|date('d/m/Y H:i') }}</td>
+                <td>
+{#                    <a href="{{ path('app_task_show', {'id': task.id}) }}">Voir</a>#}
+{#                    <a href="{{ path('app_task_edit', {'id': task.id}) }}">Modifier</a>#}
+                </td>
+                <td>
+                    <button
+                        class="btn"
+                        type="button"
+                        data-action="live#action"
+                        data-live-action-param="updateCompletedStatus"
+                        data-live-id-param="{{ task.id }}"
+                        data-live-completed-param="false">
+                        Marquer comme non terminée
                     </button>
                 </td>
             </tr>
