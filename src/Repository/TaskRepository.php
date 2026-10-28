@@ -24,6 +24,7 @@ class TaskRepository extends ServiceEntityRepository
     public function findByCriteria(TaskSearchCriteria $taskSearchCriteria, User $currentUser): array
     {
         $keyWord = '%' . $taskSearchCriteria->getKeyWord() . '%';
+        $isCompleted = $taskSearchCriteria->isCompleted();
         $sortMode = '';
         $targetField = '';
 
@@ -53,8 +54,10 @@ class TaskRepository extends ServiceEntityRepository
         return $this->createQueryBuilder('t')
             ->andWhere('t.title LIKE :val')
             ->andWhere('t.user = :user')
+            ->andWhere('t.completed = :completed')
             ->setParameter('val', $keyWord)
             ->setParameter('user', $currentUser)
+            ->setParameter('completed', $isCompleted)
             ->orderBy($targetField, $sortMode)
             ->getQuery()
             ->getResult()

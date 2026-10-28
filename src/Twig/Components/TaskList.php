@@ -32,7 +32,7 @@ final class TaskList
 
     public function getTasksByCriteria(): array
     {
-        $taskSearchCriteria = new TaskSearchCriteria($this->keyWord, $this->sortMode);
+        $taskSearchCriteria = new TaskSearchCriteria($this->keyWord, $this->sortMode, false);
         $currentUser = $this->security->getUser();
         if(!$currentUser instanceof User) {
             return [];
