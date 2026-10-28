@@ -50,7 +50,7 @@ final class TaskList
     }
 
     #[LiveAction]
-    public function saveAsComplete(#[LiveArg] int $id, #[LiveArg] bool $completed)
+    public function updateCompletedStatus(#[LiveArg] int $id, #[LiveArg] bool $completed)
     {
         $task = $this->taskRepository->find($id);
         if($task !== null) {
