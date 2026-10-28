@@ -60,4 +60,14 @@ class TaskRepository extends ServiceEntityRepository
             ->getResult()
             ;
     }
+
+    public function findUserCompletedTasks(User $currentUser): array {
+        return $this->createQueryBuilder('t')
+            ->andWhere('t.user = :user')
+            ->andWhere('t.completed = true')
+            ->setParameter('user', $currentUser)
+            ->getQuery()
+            ->getResult()
+            ;
+    }
 }
