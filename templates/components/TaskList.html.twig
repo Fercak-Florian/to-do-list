@@ -52,15 +52,12 @@
                     <a href="{{ path('app_task_edit', {'id': task.id}) }}">Modifier</a>
                 </td>
                 <td>
-                    <button
-                        class="btn"
-                        type="button"
+                    <input
+                        type="checkbox"
                         data-action="live#action"
                         data-live-action-param="updateCompletedStatus"
                         data-live-id-param="{{ task.id }}"
                         data-live-completed-param="true">
-                        Marquer comme terminée
-                    </button>
                 </td>
             </tr>
         {% else %}
@@ -86,7 +83,7 @@
         </thead>
         <tbody>
         {% for task in this.completedTasks %}
-            <tr>
+            <tr class="text-decoration-line-through">
                 <td>{{ task.id }}</td>
                 <td>{{ task.title }}</td>
                 <td>{{ task.details }}</td>
@@ -97,15 +94,13 @@
 {#                    <a href="{{ path('app_task_edit', {'id': task.id}) }}">Modifier</a>#}
                 </td>
                 <td>
-                    <button
-                        class="btn"
-                        type="button"
+                    <input
+                        type="checkbox"
                         data-action="live#action"
                         data-live-action-param="updateCompletedStatus"
                         data-live-id-param="{{ task.id }}"
-                        data-live-completed-param="false">
-                        Marquer comme non terminée
-                    </button>
+                        data-live-completed-param="false"
+                        checked>
                 </td>
             </tr>
         {% else %}
