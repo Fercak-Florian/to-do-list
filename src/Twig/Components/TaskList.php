@@ -51,7 +51,7 @@ final class TaskList extends AbstractController
     }
 
     #[LiveAction]
-    public function updateCompletedStatus(#[LiveArg] int $id, #[LiveArg] bool $completed): void
+    public function toggleCompletedStatus(#[LiveArg] int $id): void
     {
         $task = $this->taskRepository->find($id);
         if ($task === null) {
@@ -66,14 +66,13 @@ final class TaskList extends AbstractController
         }
 
         if ($task->getUser()->getId() !== $currentUser->getId()) {
-            // Votre TO DO : Erreur de sécurité / droit d'accès
             $this->addFlash('error', 'Vous n\'êtes pas autorisé à modifier cette tâche.');
             return;
         }
 
-        $task->setCompleted($completed);
+        $task->toggleStatus();
         $this->entityManager->flush();
 
-        $this->addFlash('success', $completed ? 'Tâche complétée !' : 'Tâche rouverte.');
+        $this->addFlash('success', $task->isCompleted() ? 'Tâche complétée !' : 'Tâche rouverte.');
     }
 }

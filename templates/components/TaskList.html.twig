@@ -1,7 +1,6 @@
 <div{{ attributes }}>
 
         {# Affichage des erreurs flash #}
-
         {% for label, messages in app.flashes %}
             {% for message in messages %}
                 <div data-controller="flash" class="alert alert-{{ label === 'error' ? 'danger' : label }}">
@@ -41,7 +40,7 @@
         </thead>
         <tbody>
         {% for task in this.tasksByCriteria %}
-            <tr>
+            <tr id="todo-task-{{ task.id }}">
                 <td>{{ task.id }}</td>
                 <td>{{ task.title }}</td>
                 <td>{{ task.details }}</td>
@@ -54,10 +53,11 @@
                 <td>
                     <input
                         type="checkbox"
-                        data-action="live#action"
-                        data-live-action-param="updateCompletedStatus"
+                        data-action="change->live#action"
+                        data-live-action-param="toggleCompletedStatus"
                         data-live-id-param="{{ task.id }}"
-                        data-live-completed-param="true">
+                        {% if task.completed %}checked{% endif %}
+                    >
                 </td>
             </tr>
         {% else %}
@@ -83,24 +83,25 @@
         </thead>
         <tbody>
         {% for task in this.completedTasks %}
-            <tr class="text-decoration-line-through">
+            <tr id="completed-task-{{ task.id }}"
+                class="text-decoration-line-through">
                 <td>{{ task.id }}</td>
                 <td>{{ task.title }}</td>
                 <td>{{ task.details }}</td>
                 <td>{{ task.createdAt|date('d/m/Y H:i') }}</td>
                 <td>{{ task.deadline|date('d/m/Y H:i') }}</td>
                 <td>
-{#                    <a href="{{ path('app_task_show', {'id': task.id}) }}">Voir</a>#}
-{#                    <a href="{{ path('app_task_edit', {'id': task.id}) }}">Modifier</a>#}
+                    <a role="link" aria-disabled="true">Voir</a>
+                    <a role="link" aria-disabled="true">Modifier</a>
                 </td>
                 <td>
                     <input
                         type="checkbox"
-                        data-action="live#action"
-                        data-live-action-param="updateCompletedStatus"
+                        data-action="change->live#action"
+                        data-live-action-param="toggleCompletedStatus"
                         data-live-id-param="{{ task.id }}"
-                        data-live-completed-param="false"
-                        checked>
+                        {% if task.completed %}checked{% endif %}
+                    >
                 </td>
             </tr>
         {% else %}
