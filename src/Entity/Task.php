@@ -96,7 +96,7 @@ class Task
         return $this;
     }
 
-    public function isCompleted(): ?bool
+    public function isCompleted(): bool
     {
         return $this->completed;
     }
@@ -106,5 +106,9 @@ class Task
         $this->completed = $completed;
 
         return $this;
+    }
+
+    public function toggleStatus(): void {
+        $this->completed = !$this->completed;
     }
 }
