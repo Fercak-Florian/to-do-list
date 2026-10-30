@@ -6,7 +6,7 @@
             {% for message in messages %}
                     <div
                         data-controller="flash"
-                        class="toast show align-items-center text-white bg-{{ label === 'error' ? 'danger' : label }} border-0">
+                        class="toast show align-items-center text-white bg-{{ label === 'error' ? 'danger' : label }} border-0 w-auto">
                         <div class="toast-body">
                             <div class="d-flex">
                                 <div>
@@ -27,15 +27,24 @@
         {% endfor %}
     </div>
 
-    <label for="search-bar">Rechercher</label>
-    <input type="search" data-model="keyWord" name="search-bar">
+    <div class="row g-3 align-items-center">
+        <div class="col-auto">
+            <label for="search-bar" class="col-form-label">Rechercher</label>
+        </div>
+        <div class="col-auto">
+            <input type="search" data-model="keyWord" id="search-bar" class="form-control">
+        </div>
+        <div class="col-auto">
+            <select data-model="sortMode" class="form-select" aria-label="Default select example">
+                <option value="created_desc">Du plus récent au plus ancien</option>
+                <option value="created_asc">Du plus ancien au plus récent</option>
+                <option value="deadline_desc">Du plus urgent au moins urgent</option>
+                <option value="deadline_asc">Du moins urgent au plus urgent</option>
+            </select>
+        </div>
+    </div>
 
-    <select data-model="sortMode">
-        <option value="created_desc">Du plus récent au plus ancien</option>
-        <option value="created_asc">Du plus ancien au plus récent</option>
-        <option value="deadline_desc">Du plus urgent au moins urgent</option>
-        <option value="deadline_asc">Du moins urgent au plus urgent</option>
-    </select>
+
     {#   Not completed tasks #}
     <h2>A faire</h2>
     <table class="table">
