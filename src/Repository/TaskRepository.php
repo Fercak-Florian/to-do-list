@@ -71,4 +71,21 @@ class TaskRepository extends ServiceEntityRepository
             ->getResult()
             ;
     }
+
+    /**
+     * @param User $user
+     * @param int $taskId
+     * @return Task|null
+     */
+    public function findOneByUserAndId(User $user, int $taskId): Task|null
+    {
+        return $this->createQueryBuilder('t')
+            ->andWhere('t.user = :user')
+            ->andWhere('t.id = :id')
+            ->setParameter('user', $user)
+            ->setParameter('id', $taskId)
+            ->getQuery()
+            ->getOneOrNullResult()
+            ;
+    }
 }
