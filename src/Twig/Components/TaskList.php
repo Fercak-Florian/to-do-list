@@ -3,6 +3,7 @@
 namespace App\Twig\Components;
 
 use App\Entity\User;
+use App\Enum\TaskSortMode;
 use App\Repository\TaskRepository;
 use App\Utils\TaskSearchCriteria;
 use Doctrine\ORM\EntityManagerInterface;
@@ -33,11 +34,15 @@ final class TaskList extends AbstractController
 
     public function getTasksByCriteria(): array
     {
-        $taskSearchCriteria = new TaskSearchCriteria($this->keyWord, $this->sortMode, false);
         $currentUser = $this->security->getUser();
         if(!$currentUser instanceof User) {
             return [];
         }
+        $taskSortMode = TaskSortMode::tryFrom($this->sortMode);
+        if (null === $taskSortMode) {
+            $taskSortMode = TaskSortMode::CREATED_DESC;
+        }
+        $taskSearchCriteria = new TaskSearchCriteria($this->keyWord, $taskSortMode, false);
         return $this->taskRepository->findByCriteria($taskSearchCriteria, $currentUser);
     }
 

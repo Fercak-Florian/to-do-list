@@ -2,17 +2,20 @@
 
 namespace App\Utils;
 
+use App\Enum\TaskSortMode;
+
 class TaskSearchCriteria
 {
-    private string $keyWord = '';
-    private string $sortMode = 'created_desc';
+    private string $keyWord;
+    private TaskSortMode $sortMode;
     private bool $isCompleted = false;
 
     /**
      * @param string $keyWord
-     * @param string $sortMode
+     * @param TaskSortMode $sortMode
+     * @param bool $isCompleted
      */
-    public function __construct(string $keyWord, string $sortMode, bool $isCompleted)
+    public function __construct(string $keyWord, TaskSortMode $sortMode, bool $isCompleted)
     {
         $this->keyWord = $keyWord;
         $this->sortMode = $sortMode;
@@ -29,12 +32,12 @@ class TaskSearchCriteria
         $this->isCompleted = $isCompleted;
     }
 
-    public function getSortMode(): string
+    public function getSortMode(): TaskSortMode
     {
         return $this->sortMode;
     }
 
-    public function setSortMode(string $sortMode): void
+    public function setSortMode(TaskSortMode $sortMode): void
     {
         $this->sortMode = $sortMode;
     }
