@@ -38,10 +38,9 @@ final class TaskList extends AbstractController
         if(!$currentUser instanceof User) {
             return [];
         }
-        $taskSortMode = TaskSortMode::tryFrom($this->sortMode);
-        if (null === $taskSortMode) {
-            $taskSortMode = TaskSortMode::CREATED_DESC;
-        }
+
+        $taskSortMode = TaskSortMode::tryFrom($this->sortMode) ?? TaskSortMode::CREATED_DESC;
+
         $taskSearchCriteria = new TaskSearchCriteria($this->keyWord, $taskSortMode, false);
         return $this->taskRepository->findByCriteria($taskSearchCriteria, $currentUser);
     }
