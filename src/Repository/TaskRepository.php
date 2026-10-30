@@ -4,6 +4,7 @@ namespace App\Repository;
 
 use App\Entity\Task;
 use App\Entity\User;
+use App\Enum\TaskSortMode;
 use App\Utils\TaskSearchCriteria;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
@@ -29,25 +30,22 @@ class TaskRepository extends ServiceEntityRepository
         $targetField = '';
 
         switch ($taskSearchCriteria->getSortMode()) {
-            case 'created_desc':
+            case TaskSortMode::CREATED_DESC:
                 $targetField = 't.createdAt';
                 $sortMode = 'DESC';
                 break;
-            case 'created_asc':
+            case TaskSortMode::CREATED_ASC:
                 $targetField = 't.createdAt';
                 $sortMode = 'ASC';
                 break;
-            case 'deadline_desc':
+            case TaskSortMode::DEADLINE_DESC:
                 $targetField = 't.deadline';
                 $sortMode = 'DESC';
                 break;
-            case 'deadline_asc':
+            case TaskSortMode::DEADLINE_ASC:
                 $targetField = 't.deadline';
                 $sortMode = 'ASC';
                 break;
-            default :
-                $targetField = 't.createdAt';
-                $sortMode = 'DESC';
         }
 
 
