@@ -58,20 +58,15 @@ final class TaskList extends AbstractController
     #[LiveAction]
     public function toggleCompletedStatus(#[LiveArg] int $id): void
     {
-        $task = $this->taskRepository->find($id);
-        if ($task === null) {
-            $this->addFlash('error', 'Tâche introuvable.');
-            return;
-        }
-
         $currentUser = $this->security->getUser();
         if (!$currentUser instanceof User) {
             $this->addFlash('error', 'Vous devez être connecté.');
             return;
         }
 
-        if ($task->getUser()->getId() !== $currentUser->getId()) {
-            $this->addFlash('error', 'Vous n\'êtes pas autorisé à modifier cette tâche.');
+        $task = $this->taskRepository->findOneByUserAndId($currentUser, $id);
+        if($task === null) {
+            $this->addFlash('error', 'Tâche introuvable.');
             return;
         }
 
